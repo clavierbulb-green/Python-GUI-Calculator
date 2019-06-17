@@ -1,13 +1,16 @@
+#!/usr/bin/env python3
+
 import PySimpleGUI as sg
 import calculator
 
-layout=[[sg.Text('', size=(10, 1), font=('Helvetica', 18), key='out')],
+layout=[[sg.Text('', size=(15, 1), font=('Helvetica', 18), key='out')],
         [sg.Button('7'), sg.Button('8'), sg.Button('9'), sg.Button('*')],
         [sg.Button('4'), sg.Button('5'), sg.Button('6'), sg.Button('/')],
         [sg.Button('1'), sg.Button('2'), sg.Button('3'), sg.Button('-')],
         [sg.Button('C'), sg.Button('0'), sg.Button('='), sg.Button('+')]]
         
-window = sg.Window('Calculator', layout, default_button_element_size=(5, 2), 
+window = sg.Window('Calculator', layout, return_keyboard_events=True, 
+        use_default_focus=False, default_button_element_size=(5, 2), 
         auto_size_buttons=False, grab_anywhere=False)
 
 display = ''
@@ -17,17 +20,36 @@ second_operand = None
 operator = None
 answered = False
 
+def convertShortcut(event):
+    if event == 'e':
+        event = '='
+    elif event == 'a':
+        event = '+'
+    elif event == 's':
+        event = '-'
+    elif event == 'm':
+        event = '*'
+    elif event == 'd':
+        event = '/'
+    elif event == 'q':
+        event = None
+
+    return event
+
 while True:
     event, values = window.Read()
+
+    event = convertShortcut(event)
+    
     if event is None:
         break
-    if event is 'C':
+    if event.lower() == 'c':
         display = ''
         keys_entered = ''
         first_operand = None
         second_operand = None
         operator = None
-    elif event in '1234567890':
+    elif event in '1234567890.':
         if answered:
             answered = False
             if not operator:
@@ -43,19 +65,24 @@ while True:
         keys_entered = ''
         display += event
         operator = event
-    elif event is '=':
+    elif event == '=': 
         if not first_operand or not operator:
             continue
 
         second_operand = float(keys_entered)
+        answer = None
         if operator == '+':
-            display = str(calculator.add(first_operand, second_operand))
+            answer = round(calculator.add(first_operand, second_operand),10)
         elif operator == '-':
-            display = str(calculator.subtract(first_operand, second_operand))
+            answer = round(calculator.subtract(first_operand, second_operand), 10)
         elif operator == '*':
-            display = str(calculator.multiply(first_operand, second_operand))
+            answer = round(calculator.multiply(first_operand, second_operand), 10)
         elif operator == '/':
-            display = str(calculator.divide(first_operand, second_operand))
+            answer = round(calculator.divide(first_operand, second_operand),10)
+
+        if answer.is_integer():
+            answer = int(answer)
+        display = str(answer)
         keys_entered = display
         first_operand = float(display)
         second_operand = None

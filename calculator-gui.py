@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
+import operator
 import PySimpleGUI as sg
-import calculator
+#import calculator
 
 layout=[[sg.Text('', size=(15, 1), font=('Helvetica', 18), key='out')],
         [sg.Button('7'), sg.Button('8'), sg.Button('9'), sg.Button('*')],
@@ -17,8 +18,11 @@ display = ''
 keys_entered = ''
 first_operand = None
 second_operand = None
-operator = None
+current_operator = None
 answered = False
+
+operators = { "+": operator.add, "-": operator.sub, "*": operator.mul, 
+        "/": operator.truediv }
 
 def convertShortcut(event):
     if event == 'e':
@@ -48,45 +52,40 @@ while True:
         keys_entered = ''
         first_operand = None
         second_operand = None
-        operator = None
+        current_operator = None
     elif event in '1234567890.':
         if answered:
             answered = False
-            if not operator:
+            if not current_operator:
                 display = ''
                 keys_entered = ''
         display += event
         keys_entered += event
-    elif event in '*/+-':
+    elif event in operators:
         if not keys_entered:
             continue
         if not first_operand:
             first_operand = float(keys_entered)
         keys_entered = ''
         display += event
-        operator = event
+        current_operator = event
     elif event == '=': 
-        if not first_operand or not operator:
+        if not first_operand or not current_operator:
             continue
 
         second_operand = float(keys_entered)
-        answer = None
-        if operator == '+':
-            answer = round(calculator.add(first_operand, second_operand),10)
-        elif operator == '-':
-            answer = round(calculator.subtract(first_operand, second_operand), 10)
-        elif operator == '*':
-            answer = round(calculator.multiply(first_operand, second_operand), 10)
-        elif operator == '/':
-            answer = round(calculator.divide(first_operand, second_operand),10)
+
+        answer = operators[current_operator](first_operand,second_operand)
+        answer = round(answer, 10)
 
         if answer.is_integer():
             answer = int(answer)
         display = str(answer)
+
         keys_entered = display
         first_operand = float(display)
         second_operand = None
-        operator = None
+        current_operator = None
         answered = True
 
     window.Element('out').Update(display)

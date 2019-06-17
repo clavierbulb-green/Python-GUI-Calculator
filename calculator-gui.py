@@ -3,7 +3,8 @@
 import operator
 import PySimpleGUI as sg
 
-layout=[[sg.Text('', size=(15, 1), font=('Helvetica', 18), key='out')],
+layout=[[sg.Text('', size=(20, 1), font=('Helvetica', 18),
+    background_color='white',key='out')],
         [sg.Button('7'), sg.Button('8'), sg.Button('9'), sg.Button('*')],
         [sg.Button('4'), sg.Button('5'), sg.Button('6'), sg.Button('/')],
         [sg.Button('1'), sg.Button('2'), sg.Button('3'), sg.Button('-')],

@@ -2,7 +2,6 @@
 
 import operator
 import PySimpleGUI as sg
-#import calculator
 
 layout=[[sg.Text('', size=(15, 1), font=('Helvetica', 18), key='out')],
         [sg.Button('7'), sg.Button('8'), sg.Button('9'), sg.Button('*')],
@@ -40,6 +39,7 @@ def convertShortcut(event):
 
     return event
 
+# main program loop
 while True:
     event, values = window.Read()
 
@@ -47,12 +47,16 @@ while True:
     
     if event is None:
         break
+
+    # (C)lear input
     if event.lower() == 'c':
         display = ''
         keys_entered = ''
         first_operand = None
         second_operand = None
         current_operator = None
+
+    # Number input
     elif event in '1234567890.':
         if answered:
             answered = False
@@ -61,6 +65,8 @@ while True:
                 keys_entered = ''
         display += event
         keys_entered += event
+
+    # Operator input
     elif event in operators:
         if not keys_entered:
             continue
@@ -69,6 +75,8 @@ while True:
         keys_entered = ''
         display += event
         current_operator = event
+
+    # (E)quals input
     elif event == '=': 
         if not first_operand or not current_operator:
             continue
@@ -89,7 +97,6 @@ while True:
         answered = True
 
     window.Element('out').Update(display)
-    #sg.Popup(button, values)
 
 window.Close()
 

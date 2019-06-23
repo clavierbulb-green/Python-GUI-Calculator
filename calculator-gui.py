@@ -3,16 +3,16 @@
 import operator
 import PySimpleGUI as sg
 
-layout=[[sg.Text('', size=(20, 1), font=('Helvetica', 18),
-    background_color='white',key='out')],
-        [sg.Button('7'), sg.Button('8'), sg.Button('9'), sg.Button('*')],
-        [sg.Button('4'), sg.Button('5'), sg.Button('6'), sg.Button('/')],
-        [sg.Button('1'), sg.Button('2'), sg.Button('3'), sg.Button('-')],
-        [sg.Button('C'), sg.Button('0'), sg.Button('='), sg.Button('+')]]
-        
-window = sg.Window('Calculator', layout, return_keyboard_events=True, 
-        use_default_focus=False, default_button_element_size=(5, 2), 
-        auto_size_buttons=False, grab_anywhere=False)
+layout = [[sg.Text('', size=(20, 1), font=('Helvetica', 18),
+          background_color='white', key='out')],
+          [sg.Button('7'), sg.Button('8'), sg.Button('9'), sg.Button('*')],
+          [sg.Button('4'), sg.Button('5'), sg.Button('6'), sg.Button('/')],
+          [sg.Button('1'), sg.Button('2'), sg.Button('3'), sg.Button('-')],
+          [sg.Button('C'), sg.Button('0'), sg.Button('='), sg.Button('+')]]
+
+window = sg.Window('Calculator', layout, return_keyboard_events=True,
+                   use_default_focus=False, default_button_element_size=(5, 2),
+                   auto_size_buttons=False, grab_anywhere=False)
 
 display = ''
 keys_entered = ''
@@ -21,8 +21,9 @@ second_operand = None
 current_operator = None
 answered = False
 
-operators = { "+": operator.add, "-": operator.sub, "*": operator.mul, 
-        "/": operator.truediv }
+operators = {"+": operator.add, "-": operator.sub, "*": operator.mul,
+             "/": operator.truediv}
+
 
 def convertShortcut(event):
     if event == 'e':
@@ -40,12 +41,13 @@ def convertShortcut(event):
 
     return event
 
+
 # main program loop
 while True:
     event, values = window.Read()
 
     event = convertShortcut(event)
-    
+
     if event is None:
         break
 
@@ -78,13 +80,13 @@ while True:
         current_operator = event
 
     # (E)quals input
-    elif event == '=': 
+    elif event == '=':
         if not first_operand or not current_operator:
             continue
 
         second_operand = float(keys_entered)
 
-        answer = operators[current_operator](first_operand,second_operand)
+        answer = operators[current_operator](first_operand, second_operand)
         answer = round(answer, 10)
 
         if answer.is_integer():
@@ -100,4 +102,3 @@ while True:
     window.Element('out').Update(display)
 
 window.Close()
-
